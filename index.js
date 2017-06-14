@@ -21,6 +21,7 @@ var ms = require('ms')
 var parseUrl = require('parseurl')
 var path = require('path')
 var resolve = path.resolve
+var validUrl = require('valid-url')
 
 /**
  * Module exports.
@@ -167,13 +168,17 @@ function isFresh (req, res) {
  * @private
  */
 
-function resolveSync (iconPath) {
-  var path = resolve(iconPath)
-  var stat = fs.statSync(path)
-
-  if (stat.isDirectory()) {
-    throw createIsDirError(path)
+sync function resolveAsync (iconPath) {
+  if (validUrl.isUri(iconPath)) {
+    var path = await request(iconPath).pipe(fs.createWriteStream('favicon.ico'))
+  } else {
+    var path = resolve(iconPath)
+    var stat = fs.statSync(path)
+    if (stat.isDirectory()) {
+      throw createIsDirError(path)
+    }
   }
+  
 
   return path
 }
