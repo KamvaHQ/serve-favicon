@@ -168,7 +168,7 @@ function isFresh (req, res) {
  * @private
  */
 
-sync function resolveAsync (iconPath) {
+async function resolveAsync (iconPath) {
   if (validUrl.isUri(iconPath)) {
     var path = await request(iconPath).pipe(fs.createWriteStream('favicon.ico'))
   } else {
